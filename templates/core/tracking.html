@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">Status da Entrega</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ donation.get_status_display }}</h5>
+                    <p class="card-text">{{ tracking.current_status }}</p>
+                    <hr>
+                    <small class="text-muted">Última atualização: {{ tracking.last_update|date:"d/m/Y H:i:s" }}</small>
+                </div>
+            </div>
+            <a href="{% url 'my_donations' %}" class="btn btn-outline-secondary w-100 mb-3">Voltar</a>
+        </div>
+        <div class="col-md-8">
+            {% extends 'base.html' %}
+
+            {% block content %}
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+            <style>
+                #map {
+                    height: 400px;
+                    width: 100%;
+                    border-radius: 8px;
+                }
+            </style>
+
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">Status da Entrega</div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ donation.get_status_display }}</h5>
+                                <p class="card-text">{{ tracking.current_status }}</p>
+                                <hr>
+                                <small class="text-muted">Última atualização: {{ tracking.last_update|date:"d/m/Y H:i:s"
+                                    }}</small>
+                            </div>
+                        </div>
+                        <a href="{% url 'my_donations' %}" class="btn btn-outline-secondary w-100 mb-3">Voltar</a>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="map" class="shadow-sm"></div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+            {% if tracking %}
+            <script>
+                var map = L.map('map').setView([{{ tracking.latitude | stringformat: "f" }}, { { tracking.longitude | stringformat: "f" } }], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                L.marker([{{ tracking.latitude | stringformat: "f" }}, {{ tracking.longitude | stringformat: "f" }}]).addTo(map)
+                    .bindPopup('{{ tracking.current_status }}')
+                    .openPopup();
+            </script>
+            {% else %}
+            <div class="alert alert-warning mt-3">
+                Rastreamento ainda não disponível. Aguarde a confirmação do pagamento.
+            </div>
+            {% endif %}
+            {% endblock %}

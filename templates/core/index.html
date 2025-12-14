@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero text-center mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Faça a Diferença Hoje</h1>
+        <p class="lead">Doe cestas básicas e acompanhe a entrega em tempo real.</p>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg fw-bold text-primary mt-3">Começar a Doar</a>
+        {% else %}
+        <a href="#" class="btn btn-light btn-lg fw-bold text-primary mt-3">Nova Doação</a>
+        {% endif %}
+    </div>
+</section>
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm p-4">
+                <div class="display-4 text-primary mb-3"><i class="bi bi-cart-check"></i></div>
+                <h3>Escolha sua Cesta</h3>
+                <p>Opções prontas ou monte a sua personalizada com os itens que desejar.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm p-4">
+                <div class="display-4 text-primary mb-3"><i class="bi bi-geo-alt"></i></div>
+                <h3>Rastreamento Real</h3>
+                <p>Veja no mapa exatamente onde sua doação está e quando ela chega ao destino.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm p-4">
+                <div class="display-4 text-primary mb-3"><i class="bi bi-shield-check"></i></div>
+                <h3>Transparência Total</h3>
+                <p>Receba comprovantes e fotos da entrega realizada.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

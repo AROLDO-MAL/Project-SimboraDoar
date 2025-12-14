@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Monte sua Cesta</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            {% for item in items %}
+            <div class="col-md-6 mb-3">
+                <div class="card p-3 d-flex flex-row justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">{{ item.name }}</h5>
+                        <p class="text-muted mb-0">R$ {{ item.price|floatformat:2 }}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <input type="number" name="qty_{{ item.id }}" class="form-control text-center" value="0" min="0"
+                            style="width: 80px;">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="d-grid gap-2 col-6 mx-auto mt-4">
+            <button type="submit" class="btn btn-success btn-lg">Concluir Cesta</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

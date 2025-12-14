@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Escolha o Tamanho</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="list-group mb-4">
+                            <label class="list-group-item d-flex gap-3">
+                                <input class="form-check-input flex-shrink-0" type="radio" name="size" value="small"
+                                    checked>
+                                <span class="pt-1 form-checked-content">
+                                    <strong>Cesta Pequena</strong>
+                                    <small class="d-block text-muted">Itens básicos para 2 pessoas.</small>
+                                </span>
+                                <span class="ms-auto fw-bold">R$ 50,00</span>
+                            </label>
+                            <label class="list-group-item d-flex gap-3">
+                                <input class="form-check-input flex-shrink-0" type="radio" name="size" value="medium">
+                                <span class="pt-1 form-checked-content">
+                                    <strong>Cesta Média</strong>
+                                    <small class="d-block text-muted">Ideal para família de 4 pessoas.</small>
+                                </span>
+                                <span class="ms-auto fw-bold">R$ 100,00</span>
+                            </label>
+                            <label class="list-group-item d-flex gap-3">
+                                <input class="form-check-input flex-shrink-0" type="radio" name="size" value="large">
+                                <span class="pt-1 form-checked-content">
+                                    <strong>Cesta Grande</strong>
+                                    <small class="d-block text-muted">Completa com itens de higiene.</small>
+                                </span>
+                                <span class="ms-auto fw-bold">R$ 200,00</span>
+                            </label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Continuar para Pagamento</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
