@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -5,81 +6,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SimboraDoar{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+
+
+    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
 
-        main {
-            flex: 1;
-        }
-
-        .hero {
-            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 40px 0;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'index' %}"><i class="bi bi-box2-heart"></i> SimboraDoar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Início</a></li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'donate_options' %}">Doar Agora</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'my_donations' %}">Minhas Doações</a></li>
-                    <li class="nav-item">
-                        <span class="nav-link disabled text-white">Olá, {{ user.first_name|default:user.username
-                            }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <form action="{% url 'logout' %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-link nav-link">Sair</button>
-                        </form>
-                    </li>
-                    {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Entrar</a></li>
-                    <li class="nav-item"><a class="btn btn-light text-primary ms-2"
-                            href="{% url 'register' %}">Cadastrar</a></li>
+
+    {% if user.is_authenticated %}
+    <!-- LOGGED IN LAYOUT -->
+    <div class="d-flex" id="wrapper">
+        <!-- Modern Sidebar -->
+        <div id="sidebar-wrapper" class="text-white sidebar">
+            <div class="sidebar-heading border-bottom border-white border-opacity-10">
+                <i class="bi bi-box2-heart-fill"></i> SimboraDoar
+            </div>
+            <div class="list-group list-group-flush mt-3">
+                <a href="{% url 'index' %}"
+                    class="list-group-item list-group-item-action text-white bg-transparent border-0">
+                    <i class="bi bi-house me-3 fs-5"></i> Início
+                </a>
+                <a href="{% url 'profile' %}"
+                    class="list-group-item list-group-item-action text-white bg-transparent border-0">
+                    <i class="bi bi-person-circle me-3 fs-5"></i> Perfil
+                </a>
+                <a href="{% url 'donate_options' %}"
+                    class="list-group-item list-group-item-action text-white bg-transparent border-0">
+                    <i class="bi bi-heart-fill me-3 fs-5"></i> Doar Agora
+                </a>
+                <a href="{% url 'my_donations' %}"
+                    class="list-group-item list-group-item-action text-white bg-transparent border-0">
+                    <i class="bi bi-clock-history me-3 fs-5"></i> Histórico
+                </a>
+
+                {% if user.is_staff %}
+                <a href="{% url 'admin:index' %}"
+                    class="list-group-item list-group-item-action text-warning bg-transparent border-0">
+                    <i class="bi bi-shield-lock-fill me-3 fs-5"></i> Admin
+                </a>
+                {% endif %}
+
+
+                <div class="mt-auto p-3 border-top border-white border-opacity-10">
+                    <small class="text-white-50 d-block mb-2">Logado como {{ user.username }}</small>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-light w-100 btn-sm"><i class="bi bi-box-arrow-right"></i>
+                            Sair</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="page-content-wrapper">
+            <!-- Global Top Navbar -->
+            <nav class="navbar navbar-expand-lg global-navbar sticky-top px-3 shadow-sm">
+                <button class="btn btn-link text-primary p-0 me-3" id="sidebarToggle">
+                    <i class="bi bi-list fs-3"></i>
+                </button>
+
+                <div class="d-flex ms-auto gap-2">
+                    <!-- Theme Controls -->
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary" onclick="setTheme('light')"
+                            title="Claro"><i class="bi bi-sun"></i></button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="setTheme('dark')"
+                            title="Escuro"><i class="bi bi-moon"></i></button>
+                        <button type="button" class="btn btn-outline-primary fw-bold"
+                            onclick="setTheme('high-contrast')" title="Alto Contraste">A.C.</button>
+                        <button type="button" class="btn btn-outline-info" onclick="toggleTTS()" title="Ler Página"><i
+                                class="bi bi-megaphone"></i></button>
+                    </div>
+                </div>
+            </nav>
+
+            <main>
+                {% else %}
+                <!-- PUBLIC LAYOUT -->
+                <nav class="navbar navbar-expand-lg navbar-dark" style="background: var(--brand-blue);">
+                    <div class="container">
+                        <a class="navbar-brand fw-bold" href="{% url 'index' %}"><i class="bi bi-box2-heart-fill"></i>
+                            SimboraDoar</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ms-auto align-items-center">
+                                <li class="nav-item"><a class="nav-link text-white" href="{% url 'index' %}">Início</a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link text-white" href="{% url 'about' %}">Sobre
+                                        Nós</a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link text-white" href="{% url 'login' %}">Entrar</a>
+                                </li>
+                                <li class="nav-item ms-2"><a class="btn btn-light text-primary fw-bold"
+                                        href="{% url 'register' %}">Cadastrar</a></li>
+                                <!-- Theme Controls (Public) -->
+                                <li class="nav-item ms-3 border-start ps-3 border-white border-opacity-25">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-light border-0" onclick="setTheme('light')"><i
+                                                class="bi bi-sun"></i></button>
+                                        <button class="btn btn-outline-light border-0" onclick="setTheme('dark')"><i
+                                                class="bi bi-moon"></i></button>
+                                        <button class="btn btn-outline-light border-0 fw-bold"
+                                            onclick="setTheme('high-contrast')">AC</button>
+                                        <button class="btn btn-outline-light border-0" onclick="toggleTTS()"
+                                            title="Ler Página"><i class="bi bi-megaphone"></i></button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <main>
                     {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <main>
-        {% if messages %}
-        <div class="container mt-3">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% block content %}{% endblock %}
-    </main>
+                    <!-- ALERTS -->
+                    {% if messages %}
+                    <div class="container mt-3">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0"
+                            role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
 
-    <footer class="bg-dark text-white text-center py-3 mt-4">
-        <div class="container">
-            <p class="mb-0">&copy; 2024 SimboraDoar. Doação Simples e Transparente.</p>
-        </div>
-    </footer>
+                    {% block content %}{% endblock %}
+                </main>
 
+                <!-- COMPREHENSIV FOOTER -->
+                <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
+                    <div class="container-fluid px-5">
+                        <div class="row">
+                            <!-- Brand & Desc -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-box2-heart-fill text-primary"></i>
+                                    SimboraDoar</h5>
+                                <p class="text-white-50">
+                                    SimboraDoar: Conexão real, transparência total.
+                                </p>
+                            </div>
+                            <!-- Quick Links -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <h6 class="fw-bold mb-3">Links Úteis</h6>
+                                <ul class="list-unstyled text-white-50">
+                                    <li><a href="{% url 'index' %}"
+                                            class="text-white-50 text-decoration-none">Início</a></li>
+                                    <li><a href="{% url 'about' %}" class="text-white-50 text-decoration-none">Sobre
+                                            Nós</a></li>
+                                    <li><a href="#" class="text-white-50 text-decoration-none text-nowrap">Política de
+                                            Privacidade</a></li>
+                                </ul>
+                            </div>
+                            <!-- Contact -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <h6 class="fw-bold mb-3">Fale Conosco</h6>
+                                <ul class="list-unstyled text-white-50">
+                                    <li class="mb-2"><i class="bi bi-envelope me-2"></i> contato@simboradoar.org
+                                    </li>
+                                    <li class="mb-2"><i class="bi bi-whatsapp me-2"></i> (84) 99999-9999</li>
+                                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Apodi, RN</li>
+                                </ul>
+                            </div>
+                            <!-- Social -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <h6 class="fw-bold mb-3">Siga-nos</h6>
+                                <div class="d-flex gap-2">
+                                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i
+                                            class="bi bi-instagram"></i></a>
+                                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i
+                                            class="bi bi-facebook"></i></a>
+                                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i
+                                            class="bi bi-youtube"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="border-secondary opacity-50">
+                        <div class="text-center text-white-50 small">
+                            &copy; 2025 SimboraDoar. Todos os direitos reservados.
+                        </div>
+                    </div>
+                </footer>
+
+                {% if user.is_authenticated %}
+        </div> <!-- Close page-content-wrapper -->
+    </div> <!-- Close wrapper -->
+    {% endif %}
+
+    <!-- VLibras Widget -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar Toggle
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', event => {
+                    event.preventDefault();
+                    document.body.querySelector('#wrapper').classList.toggle('toggled');
+                });
+            }
+        });
+
+        // Theme Manager
+        function setTheme(theme) {
+            // Remove previous classes
+            document.body.classList.remove('dark-mode', 'high-contrast');
+
+            // Set new state
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.documentElement.setAttribute('data-bs-theme', 'dark'); // for bootstrap modals etc
+            } else if (theme === 'high-contrast') {
+                document.body.classList.add('high-contrast');
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            }
+
+            // Persist
+            localStorage.setItem('theme', theme);
+        }
+
+        // Text to Speech
+        let speechSynth = window.speechSynthesis;
+        let isSpeaking = false;
+
+        function toggleTTS() {
+            if (isSpeaking) {
+                speechSynth.cancel();
+                isSpeaking = false;
+            } else {
+                const text = document.body.innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'pt-BR';
+                speechSynth.speak(utterance);
+                isSpeaking = true;
+
+                utterance.onend = function () { isSpeaking = false; };
+            }
+        }
+
+        // Auto-Load Theme
+        (function () {
+            const saved = localStorage.getItem('theme') || 'light';
+            setTheme(saved);
+        })();
+    </script>
+    <style>
+        /* Additional Sidebar Toggling Styles needed in base because they are layout logic, not just colors */
+        #wrapper {
+            overflow-x: hidden;
+        }
+
+        #sidebar-wrapper {
+            min-height: 100vh;
+            margin-left: -16rem;
+            transition: margin 0.25s ease-out;
+            width: 16rem;
+        }
+
+        #sidebar-wrapper .sidebar-heading {
+            padding: 1.5rem;
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        #sidebar-wrapper .list-group-item {
+            padding: 1rem 1.5rem;
+        }
+
+        #page-content-wrapper {
+            min-width: 100vw;
+            width: 100%;
+        }
+
+        #wrapper.toggled #sidebar-wrapper {
+            margin-left: 0;
+        }
+
+        @media (min-width: 768px) {
+            #sidebar-wrapper {
+                margin-left: 0;
+            }
+
+            #page-content-wrapper {
+                min-width: 0;
+                width: 100%;
+            }
+
+            #wrapper.toggled #sidebar-wrapper {
+                margin-left: -16rem;
+            }
+        }
+    </style>
 </body>
 
 </html>

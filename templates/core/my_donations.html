@@ -30,10 +30,13 @@
                         </span>
                     </td>
                     <td>
-                        {% if donation.status != 'PENDING' %}
-                        <a href="{% url 'tracking' donation.id %}" class="btn btn-sm btn-outline-primary">Rastrear</a>
-                        {% else %}
+                        {% if donation.status == 'PENDING' %}
                         <a href="{% url 'payment' donation.id %}" class="btn btn-sm btn-primary">Pagar</a>
+                        {% elif not donation.community %}
+                        <a href="{% url 'choose_community' donation.id %}"
+                            class="btn btn-sm btn-warning fw-bold text-dark">Escolher Comunidade</a>
+                        {% else %}
+                        <a href="{% url 'tracking' donation.id %}" class="btn btn-sm btn-outline-primary">Rastrear</a>
                         {% endif %}
                     </td>
                 </tr>
@@ -45,5 +48,9 @@
     <div class="alert alert-info">Você ainda não fez nenhuma doação.</div>
     <a href="{% url 'donate_options' %}" class="btn btn-primary">Fazer Doação</a>
     {% endif %}
+    <div class="text-center mt-5 mb-4">
+        <a href="{% url 'profile' %}" class="btn btn-outline-secondary rounded-pill px-4"><i
+                class="bi bi-arrow-left"></i> Voltar para Perfil</a>
+    </div>
 </div>
 {% endblock %}

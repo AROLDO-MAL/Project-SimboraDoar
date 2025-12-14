@@ -1,29 +1,136 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Monte sua Cesta</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">
-            {% for item in items %}
-            <div class="col-md-6 mb-3">
-                <div class="card p-3 d-flex flex-row justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-0">{{ item.name }}</h5>
-                        <p class="text-muted mb-0">R$ {{ item.price|floatformat:2 }}</p>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <input type="number" name="qty_{{ item.id }}" class="form-control text-center" value="0" min="0"
-                            style="width: 80px;">
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+<!-- Hero Section (Condensed) -->
+<div class="position-relative text-center text-white pb-5"
+    style="background: linear-gradient(to top, #0f172a 10%, rgba(15, 23, 42, 0.4) 70%, rgba(15, 23, 42, 0.6) 100%), url('{% static 'img/about_hero.jpg' %}') no-repeat center 35%; background-size: cover; padding-top: 10vh; padding-bottom: 5rem;">
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.4);"></div>
+    <div class="container position-relative z-1">
+        <h1 class="display-4 fw-bold mb-3">Monte sua Cesta</h1>
+        <div class="d-flex justify-content-center mb-4">
+            <div class="bg-success rounded-pill" style="height: 4px; width: 80px;"></div>
         </div>
-        <div class="d-grid gap-2 col-6 mx-auto mt-4">
-            <button type="submit" class="btn btn-success btn-lg">Concluir Cesta</button>
-        </div>
-    </form>
+        <p class="lead opacity-75">Escolha cada item com carinho e personalize sua doação.</p>
+    </div>
 </div>
+
+<div class="container pb-5" style="margin-top: -4rem;">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="card-body p-4 p-lg-5 bg-white dark-mode-adjust">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-4 mb-5">
+                    {% for item in items %}
+                    <div class="col-md-6 col-lg-4">
+                        <div
+                            class="item-card h-100 p-4 rounded-4 border transition-all d-flex flex-column align-items-center text-center">
+                            <div class="mb-3 bg-secondary bg-opacity-10 rounded-circle p-3 d-inline-flex">
+                                <i class="bi bi-bag-heart-fill fs-2 text-secondary"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1 text-dark">{{ item.name }}</h5>
+                            <p class="text-success fw-bold mb-4">R$ {{ item.price|floatformat:2 }}</p>
+
+                            <div class="mt-auto w-100">
+                                <label class="small text-secondary mb-2 d-block">Quantidade</label>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        onclick="decrement('qty_{{ item.id }}')">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" id="qty_{{ item.id }}" name="qty_{{ item.id }}"
+                                        class="form-control text-center quantity-input fw-bold bg-light border-secondary-subtle"
+                                        value="0" min="0">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        onclick="increment('qty_{{ item.id }}')">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-grid gap-3 col-lg-6 mx-auto">
+                    <button type="submit"
+                        class="btn btn-success btn-lg rounded-pill py-3 fw-bold shadow-sm transition-scale">
+                        Concluir Cesta <i class="bi bi-check-lg ms-2"></i>
+                    </button>
+                    <a href="{% url 'donate_options' %}"
+                        class="btn btn-outline-secondary rounded-pill py-2 border-0 opacity-75 hover-opacity-100">
+                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function increment(id) {
+        const input = document.getElementById(id);
+        input.value = parseInt(input.value) + 1;
+    }
+
+    function decrement(id) {
+        const input = document.getElementById(id);
+        if (parseInt(input.value) > 0) {
+            input.value = parseInt(input.value) - 1;
+        }
+    }
+</script>
+
+<style>
+    .item-card {
+        border-color: #e2e8f0;
+        background-color: #fff;
+    }
+
+    .item-card:hover {
+        border-color: var(--bs-success);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        transform: translateY(-5px);
+    }
+
+    .quantity-input {
+        max-width: 60px;
+        /* Prevent it from being too wide if flex allows */
+    }
+
+    /* Remove number arrows from input */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+
+    .transition-scale:hover {
+        transform: scale(1.02);
+    }
+
+    /* Dark Mode Adjustments */
+    [data-bs-theme="dark"] .bg-white.dark-mode-adjust {
+        background-color: #1e293b !important;
+    }
+
+    [data-bs-theme="dark"] .item-card {
+        background-color: #1e293b;
+        border-color: #334155;
+    }
+
+    [data-bs-theme="dark"] .text-dark {
+        color: #f8fafc !important;
+    }
+
+    [data-bs-theme="dark"] .bg-light {
+        background-color: #334155 !important;
+        color: white !important;
+        border-color: #475569 !important;
+    }
+</style>
 {% endblock %}

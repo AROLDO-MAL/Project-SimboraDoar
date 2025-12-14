@@ -1,48 +1,153 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<!-- Hero Section (Condensed) -->
+<div class="position-relative text-center text-white pb-5"
+    style="background: linear-gradient(to top, #0f172a 10%, rgba(15, 23, 42, 0.4) 70%, rgba(15, 23, 42, 0.6) 100%), url('{% static 'img/about_hero.jpg' %}') no-repeat center 35%; background-size: cover; padding-top: 10vh; padding-bottom: 5rem;">
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.4);"></div>
+    <div class="container position-relative z-1">
+        <h1 class="display-4 fw-bold mb-3">Escolha o Tamanho da Cesta</h1>
+        <div class="d-flex justify-content-center mb-4">
+            <div class="bg-primary rounded-pill" style="height: 4px; width: 80px;"></div>
+        </div>
+        <p class="lead opacity-75">Selecione uma das opções abaixo para fazer sua doação.</p>
+    </div>
+</div>
+
+<div class="container pb-5" style="margin-top: -4rem;">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body p-5">
-                    <h2 class="text-center mb-4">Escolha o Tamanho</h2>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-5 bg-white dark-mode-adjust">
                     <form method="post">
                         {% csrf_token %}
-                        <div class="list-group mb-4">
-                            <label class="list-group-item d-flex gap-3">
-                                <input class="form-check-input flex-shrink-0" type="radio" name="size" value="small"
-                                    checked>
-                                <span class="pt-1 form-checked-content">
-                                    <strong>Cesta Pequena</strong>
-                                    <small class="d-block text-muted">Itens básicos para 2 pessoas.</small>
-                                </span>
-                                <span class="ms-auto fw-bold">R$ 50,00</span>
+                        <div class="d-flex flex-column gap-3 mb-5">
+
+                            <!-- Small Basket Option -->
+                            <label
+                                class="selection-card p-4 rounded-3 border transition-all cursor-pointer d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input fs-4" type="radio" name="size" value="small" checked>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold mb-1 text-dark">Cesta Pequena</h5>
+                                    <small class="text-secondary">Itens básicos para 2 pessoas.</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fs-4 fw-bold text-primary">R$ 50,00</span>
+                                </div>
                             </label>
-                            <label class="list-group-item d-flex gap-3">
-                                <input class="form-check-input flex-shrink-0" type="radio" name="size" value="medium">
-                                <span class="pt-1 form-checked-content">
-                                    <strong>Cesta Média</strong>
-                                    <small class="d-block text-muted">Ideal para família de 4 pessoas.</small>
-                                </span>
-                                <span class="ms-auto fw-bold">R$ 100,00</span>
+
+                            <!-- Medium Basket Option -->
+                            <label
+                                class="selection-card p-4 rounded-3 border transition-all cursor-pointer d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input fs-4" type="radio" name="size" value="medium">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold mb-1 text-dark">Cesta Média</h5>
+                                    <small class="text-secondary">Ideal para família de 4 pessoas.</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fs-4 fw-bold text-primary">R$ 100,00</span>
+                                </div>
                             </label>
-                            <label class="list-group-item d-flex gap-3">
-                                <input class="form-check-input flex-shrink-0" type="radio" name="size" value="large">
-                                <span class="pt-1 form-checked-content">
-                                    <strong>Cesta Grande</strong>
-                                    <small class="d-block text-muted">Completa com itens de higiene.</small>
-                                </span>
-                                <span class="ms-auto fw-bold">R$ 200,00</span>
+
+                            <!-- Large Basket Option -->
+                            <label
+                                class="selection-card p-4 rounded-3 border transition-all cursor-pointer d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input fs-4" type="radio" name="size" value="large">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold mb-1 text-dark">Cesta Grande</h5>
+                                    <small class="text-secondary">Completa com itens de higiene.</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fs-4 fw-bold text-primary">R$ 200,00</span>
+                                </div>
                             </label>
+
                         </div>
+
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Continuar para Pagamento</button>
+                            <button type="submit"
+                                class="btn btn-primary btn-lg rounded-pill py-3 fw-bold shadow-sm transition-scale">
+                                Continuar para Pagamento <i class="bi bi-credit-card ms-2"></i>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
+
+            <div class="text-center mt-5">
+                <a href="{% url 'donate_options' %}"
+                    class="btn btn-link text-decoration-none opacity-75 hover-opacity-100 footer-link">
+                    <i class="bi bi-arrow-left me-1"></i> Voltar
+                </a>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .selection-card {
+        border-color: #e2e8f0;
+        /* slate-200 */
+    }
+
+    .selection-card:hover {
+        background-color: #f8fafc;
+        /* slate-50 */
+        border-color: var(--bs-primary) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .selection-card:has(input:checked) {
+        border-color: var(--bs-primary) !important;
+        background-color: rgba(13, 110, 253, 0.05);
+        /* primary with opacity */
+        box-shadow: 0 0 0 1px var(--bs-primary);
+    }
+
+    .transition-all {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .transition-scale:hover {
+        transform: scale(1.02);
+    }
+
+    .footer-link {
+        color: var(--bs-body-color);
+    }
+
+    /* Dark Mode Adjustments */
+    [data-bs-theme="dark"] .bg-white.dark-mode-adjust {
+        background-color: #1e293b !important;
+    }
+
+    [data-bs-theme="dark"] .selection-card {
+        border-color: #334155;
+        /* slate-700 */
+    }
+
+    [data-bs-theme="dark"] .selection-card:hover {
+        background-color: #334155;
+    }
+
+    [data-bs-theme="dark"] .text-dark {
+        color: #f8fafc !important;
+    }
+
+    [data-bs-theme="dark"] .text-secondary {
+        color: #94a3b8 !important;
+    }
+</style>
 {% endblock %}

@@ -1,0 +1,75 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block after_field_sets %}
+<!-- Map Section -->
+<div style="margin: 20px 0; padding: 15px; background: #fff; border: 1px solid #ccc; border-radius: 4px;">
+    <h2 style="margin-top: 0;">Visualização da Entrega</h2>
+    <div id="admin-map" style="height: 400px; width: 100%;"></div>
+</div>
+
+<!-- Leaflet Assets (CDN) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get coordinates from the form values (if they exist) or the object
+        // Just for visualization, we use the object's current values if available
+
+        // Sede Coordinates (Fixed)
+        const sedeLat = -5.6622;
+        const sedeLng = -37.7989;
+
+        // Current Tracking Position (from Django 'original' context variable)
+        const currentLat = parseFloat("{{ original.latitude|default:'-5.6622' }}".replace(',', '.'));
+        const currentLng = parseFloat("{{ original.longitude|default:'-37.7989' }}".replace(',', '.'));
+
+        // Destination (Community)
+        // We try to access it via valid relationships
+        let destLat = null;
+        let destLng = null;
+        let destName = "Destino";
+
+        {% if original.donation.community %}
+        destLat = parseFloat("{{ original.donation.community.latitude }}".replace(',', '.'));
+        destLng = parseFloat("{{ original.donation.community.longitude }}".replace(',', '.'));
+        destName = "{{ original.donation.community.name }}";
+        {% endif %}
+
+        // Initialize Map
+        const map = L.map('admin-map').setView([currentLat, currentLng], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Markers
+        // Sede
+        L.marker([sedeLat, sedeLng]).addTo(map).bindPopup('Sede (Apodi)');
+
+        // Current Position (Truck)
+        const truckIcon = L.divIcon({
+            html: '🚚',
+            className: 'dummy', // Leaflet needs a class
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+        L.marker([currentLat, currentLng], { icon: truckIcon }).addTo(map).bindPopup('Posição Atual (Caminhão)');
+
+        // Destination
+        if (destLat && destLng) {
+            L.marker([destLat, destLng]).addTo(map).bindPopup(destName);
+
+            // Route Line
+            L.polyline([[sedeLat, sedeLng], [destLat, destLng]], {
+                color: 'blue',
+                dashArray: '5, 10',
+                opacity: 0.5
+            }).addTo(map);
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary mb-2">Escolha o Destino</h1>
+        <p class="lead text-muted">Para qual comunidade você gostaria que sua doação fosse enviada?</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+            {% for community in communities %}
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm hover-up transition-all selection-card"
+                    onclick="selectCard(this, '{{ community.id }}')">
+                    {% if community.photo %}
+                    <img src="{{ community.photo.url }}" class="card-img-top" alt="{{ community.name }}"
+                        style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                        style="height: 200px;">
+                        <i class="bi bi-people fs-1 text-muted opacity-50"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body text-center p-4">
+                        <h5 class="card-title fw-bold text-primary">{{ community.name }}</h5>
+                        <p class="card-text text-muted small">{{ community.description }}</p>
+                        <div class="form-check d-flex justify-content-center mt-3">
+                            <input class="form-check-input" type="radio" name="community" id="comm_{{ community.id }}"
+                                value="{{ community.id }}" required style="transform: scale(1.5);">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <button type="submit"
+                class="btn btn-primary btn-lg rounded-pill fw-bold px-5 py-3 shadow-lg transition-scale">
+                Confirmar Destino <i class="bi bi-arrow-right-short ms-1"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .selection-card {
+        cursor: pointer;
+        border: 2px solid transparent !important;
+    }
+
+    .selection-card.selected {
+        border-color: var(--bs-primary) !important;
+        background-color: rgba(var(--bs-primary-rgb), 0.03);
+    }
+
+    /* Hide the radio circle visually if we want card selection only, but keeping it for clarity is fine */
+</style>
+
+<script>
+    function selectCard(cardElement, radioId) {
+        // Deselect all cards
+        document.querySelectorAll('.selection-card').forEach(c => c.classList.remove('selected'));
+        // Select clicked card
+        cardElement.classList.add('selected');
+        // Check the radio button
+        document.getElementById('comm_' + radioId).checked = true;
+    }
+</script>
+{% endblock %}

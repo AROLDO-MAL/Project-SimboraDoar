@@ -6,8 +6,24 @@ class User(AbstractUser):
     cpf = models.CharField(max_length=14, unique=True, verbose_name="CPF")
     phone = models.CharField(max_length=15, verbose_name="Telefone")
 
+    REQUIRED_FIELDS = ['email', 'cpf', 'phone']
+
     def __str__(self):
         return self.username
+
+class Community(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Nome da Comunidade")
+    description = models.TextField(verbose_name="Descrição")
+    latitude = models.FloatField(verbose_name="Latitude")
+    longitude = models.FloatField(verbose_name="Longitude")
+    photo = models.ImageField(upload_to='communities/', null=True, blank=True, verbose_name="Foto")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Comunidade"
+        verbose_name_plural = "Comunidades"
 
 class Donation(models.Model):
     STATUS_CHOICES = [
@@ -24,6 +40,7 @@ class Donation(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='donations')
+    community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, blank=True, related_name='donations', verbose_name="Comunidade Destino")
     type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     items = models.JSONField(default=list, verbose_name="Itens da Cesta")
     total_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -42,3 +59,16 @@ class Tracking(models.Model):
 
     def __str__(self):
         return f"Rastreio {self.donation.id}"
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField(verbose_name="Depoimento")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Depoimento"
+        verbose_name_plural = "Depoimentos"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.created_at.strftime('%d/%m/%Y')}"

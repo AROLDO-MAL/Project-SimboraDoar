@@ -1,0 +1,388 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Administração do SimboraDoar{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}" class="brand-link">
+        <img src="https://cdn-icons-png.flaticon.com/512/2830/2830305.png" alt="Icon">
+        <span>Administração do SimboraDoar</span>
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrahead %}
+<link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+{% endblock %}
+
+{% block extrastyle %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    /* =========================================================================
+       ADMIN THEME OVERHAUL - "CLEAN & READABLE"
+       ========================================================================= */
+
+    :root {
+        /* --- LIGHT MODE PALETTE (Glassy) --- */
+        --bg-overlay: linear-gradient(to top, rgba(241, 245, 249, 0.85), rgba(241, 245, 249, 0.65));
+        /* Light Slate Overlay */
+        --page-bg: #f8fafc;
+        /* Fallback */
+        --card-bg: rgba(255, 255, 255, 0.85);
+        /* White Glass */
+        --header-bg: #1e293b;
+        /* Dark Header */
+
+        --text-main: #020617;
+        /* Slate 950 (Almost Black) - Darker as requested */
+        --text-muted: #334155;
+        /* Slate 700 - Much darker muted text */
+        --text-header: #ffffff;
+
+        --border-color: rgba(0, 0, 0, 0.15);
+        /* Slightly stronger border */
+        --accent-color: #1d4ed8;
+        /* Blue 700 - Darker accent */
+        --success-color: #059669;
+        /* Emerald 600 */
+
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+        /* --- DARK MODE PALETTE (Perfect - NO TOUCH) --- */
+        --bg-overlay: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+        --page-bg: #0f172a;
+        --card-bg: rgba(30, 41, 59, 0.7);
+        --header-bg: #020617;
+
+        --text-main: #f1f5f9;
+        --text-muted: #94a3b8;
+        --text-header: #f1f5f9;
+
+        --border-color: rgba(255, 255, 255, 0.1);
+        --accent-color: #60a5fa;
+        --success-color: #34d399;
+
+        --shadow-sm: none;
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    }
+
+    /* --- HIGH CONTRAST MODE (Light High Contrast) --- */
+    body.high-contrast {
+        --bg-overlay: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95));
+        /* White overlay */
+        --page-bg: #ffffff;
+        --card-bg: #ffffff;
+        --header-bg: #000000;
+
+        --text-main: #000000;
+        /* Pure Black */
+        --text-muted: #000000;
+        /* No muted text in HC */
+        --text-header: #ffff00;
+        /* Yellow on Black Header for max contrast */
+
+        --border-color: #000000;
+        /* Black borders */
+        --accent-color: #0000ee;
+        /* Standard Link Blue */
+        --success-color: #008000;
+        /* Dark Green */
+
+        --shadow-sm: none;
+        --shadow-md: 0 0 0 2px #000000;
+        /* Solid borders instead of shadow */
+    }
+
+    /* Global Background Image Application */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, sans-serif !important;
+
+        /* Unified Background Logic */
+        background-color: var(--page-bg);
+        background-image: var(--bg-overlay),
+        url("{% static 'img/admin_bg.png' %}");
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        color: var(--text-main) !important;
+        min-height: 100vh;
+        width: 100%;
+        overflow-x: hidden;
+        transition: background-image 0.3s, background-color 0.3s, color 0.3s;
+    }
+
+    /* Remove specific dark body rule */
+    [data-theme="dark"] body {
+        /* Already handled by global body + var(--bg-overlay) */
+        background-image: var(--bg-overlay),
+        url("{% static 'img/admin_bg.png' %}");
+    }
+
+    a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* --- HEADER --- */
+    #header {
+        background: var(--header-bg) !important;
+        color: var(--text-header) !important;
+        padding: 15px 40px !important;
+        box-shadow: var(--shadow-md);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+    }
+
+    #header a {
+        color: var(--text-header) !important;
+    }
+
+    .brand-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .brand-link img {
+        height: 28px;
+        filter: invert(1);
+        /* Default: White icon for dark header */
+    }
+
+    body.high-contrast .brand-link img {
+        filter: none;
+        /* Yellow/Contrast icon handling if needed, or stick to invert */
+    }
+
+    #user-tools {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    /* --- LAYOUT & MODULES --- */
+    #content {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* Dashboard Grid */
+    .dashboard #content {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        gap: 30px;
+    }
+
+    @media (max-width: 1024px) {
+        .dashboard #content {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Cards/Modules */
+    .module {
+        background: var(--card-bg) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+    .module caption,
+    .module caption a {
+        background: rgba(0, 0, 0, 0.03) !important;
+        font-weight: 800 !important;
+        padding: 8px 10px;
+        /* Reduced vertical and horizontal padding */
+        font-size: 0.85rem;
+        /* significantly smaller to fit */
+        letter-spacing: -0.5px;
+        /* compact */
+        border-bottom: 1px solid var(--border-color);
+        display: block;
+        text-align: left;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* Graceful fail */
+    }
+
+    /* FORCE LIGHT MODE CAPTION COLOR (NUCLEAR OPTION) */
+    body:not([data-theme="dark"]):not(.high-contrast) .module caption,
+    body:not([data-theme="dark"]):not(.high-contrast) .module caption a {
+        color: #000000 !important;
+        text-shadow: none !important;
+    }
+
+    /* Dark Mode Caption Color */
+    [data-theme="dark"] .module caption,
+    [data-theme="dark"] .module caption a {
+        color: #ffffff !important;
+    }
+
+    /* High Contrast Caption Color */
+    body.high-contrast .module caption,
+    body.high-contrast .module caption a {
+        color: #000000 !important;
+        border-bottom: 2px solid #000;
+        background: #fff !important;
+    }
+
+    .module caption a:hover {
+        text-decoration: underline !important;
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td,
+    th {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-main);
+        vertical-align: middle;
+    }
+
+    th {
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        background: rgba(0, 0, 0, 0.02);
+        /* Very subtle header bg */
+        text-align: left;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Hover Row */
+    tr:hover td {
+        background-color: rgba(37, 99, 235, 0.05);
+    }
+
+    /* --- LINKS & BUTTONS --- */
+    .addlink,
+    .changelink {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        border-radius: 100px;
+        font-size: 0.75rem !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    .addlink {
+        background-color: rgba(5, 150, 105, 0.1);
+        color: var(--success-color) !important;
+    }
+
+    .changelink {
+        background-color: rgba(37, 99, 235, 0.1);
+        color: var(--accent-color) !important;
+    }
+
+    /* --- DASHBOARD TITLES --- */
+    .dashboard h1 {
+        grid-column: 1 / -1;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 10px;
+        border-bottom: 3px solid var(--accent-color);
+        padding-bottom: 10px;
+        display: inline-block;
+        width: 100%;
+    }
+
+    /* --- SIDEBAR SPECIFIC --- */
+    #content-related {
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    #content-related .module {
+        background: var(--card-bg) !important;
+        margin-bottom: 20px;
+    }
+
+    #content-related h2 {
+        font-size: 1rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    .action-entry {
+        display: block;
+        padding: 12px;
+        background: var(--card-bg);
+        /* Match card bg */
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: var(--text-main);
+    }
+
+    .action-entry:hover {
+        border-color: var(--accent-color);
+    }
+
+    /* --- FORM ELEMENTS (Inputs) --- */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select,
+    textarea {
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--border-color) !important;
+        color: var(--text-main) !important;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: var(--accent-color) !important;
+        outline: 2px solid rgba(37, 99, 235, 0.2);
+    }
+</style>
+{% endblock %}

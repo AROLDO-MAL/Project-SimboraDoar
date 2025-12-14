@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-qoaxor1+$&a)_2h#fgbsrc_z7*++wjw_cr46-zyqn9^pr6f2*z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -128,3 +128,10 @@ AUTH_USER_MODEL = 'core.User'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+LOGIN_URL = 'login'
+
+# Email Backend for Development (Console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

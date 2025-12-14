@@ -1,0 +1,139 @@
+/* Aja como um UI Designer Sênior. Aplique este CSS global ao projeto "SimboraDoar". */
+
+/* 1. Importação da Fonte Formal (Inter) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* 2. Definição das Paletas de Cores (Variáveis CSS) */
+:root {
+    /* Padrão: Modo Claro */
+    --bg-color: #F4F7F6;
+    --surface-color: #FFFFFF;
+    --text-primary: #2C3E50;
+    --text-secondary: #546E7A;
+    --brand-blue: #2980B9;
+    --brand-green: #27AE60;
+    --border-color: #E0E0E0;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+    /* Bootstrap Compaibility Override (Optional but good) */
+    --bs-body-font-family: 'Inter', sans-serif;
+}
+
+/* Classe para ativar Modo Escuro (adicione class="dark-mode" no body via JS) */
+body.dark-mode {
+    --bg-color: #1E1E2E;
+    --surface-color: #2A2A40;
+    --text-primary: #E0E0E0;
+    --text-secondary: #A0A0B0;
+    --brand-blue: #4FC3F7;
+    /* Azul mais claro para contraste */
+    --brand-green: #2ECC71;
+    --border-color: #404055;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Classe para ativar Alto Contraste (adicione class="high-contrast" no body) */
+body.high-contrast {
+    --bg-color: #000000;
+    --surface-color: #000000;
+    --text-primary: #FFFF00;
+    /* Amarelo Acessibilidade */
+    --text-secondary: #00FF00;
+    --brand-blue: #00FFFF;
+    --brand-green: #FFFFFF;
+    --border-color: #FFFFFF;
+    --shadow: none;
+}
+
+/* 3. Aplicação Global da Fonte e Cores */
+body {
+    font-family: 'Inter', sans-serif !important;
+    /* Força a nova fonte */
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 4. Atualização dos Componentes (Sidebar, Cards, Inputs) */
+.sidebar {
+    background-color: var(--surface-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.card,
+.dashboard-panel {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    /* Cantos levemente arredondados, mais moderno */
+    box-shadow: var(--shadow);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    /* Deixa títulos mais "firmes" */
+    color: var(--text-primary);
+}
+
+/* Botões Modernos */
+.btn-primary {
+    background-color: var(--brand-green);
+    color: white;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--brand-blue);
+    /* A nice hover effect derived from brand colors */
+    color: white;
+}
+
+/* 5. EXCEÇÕES SOLICITADAS (Não alterar fonte destes elementos) */
+.carousel *,
+.carousel-caption *,
+.slogan-text,
+.hero-section * {
+    font-family: inherit !important;
+    /* Mantém a fonte original (provavelmente a do tema) */
+}
+
+/* Ajuste específico para Alto Contraste nas bordas */
+body.high-contrast .card,
+body.high-contrast .sidebar,
+body.high-contrast .btn {
+    border: 2px solid var(--text-primary);
+}
+
+/* Ensure Sidebar uses correct vars - overriding original sidebar-wrapper */
+#sidebar-wrapper {
+    background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-green) 100%);
+}
+
+body.dark-mode #sidebar-wrapper {
+    background: var(--surface-color);
+    border-right: 1px solid var(--border-color);
+}
+
+body.high-contrast #sidebar-wrapper {
+    background: #000 !important;
+    border-right: 2px solid #ff0 !important;
+}
+
+/* 6. Navbar Logada Theme Aware */
+.global-navbar {
+    background-color: var(--surface-color) !important;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+body.high-contrast .global-navbar {
+    border-bottom: 2px solid var(--text-primary) !important;
+}

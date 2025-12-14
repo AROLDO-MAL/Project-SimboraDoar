@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Meu Perfil - SimboraDoar{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <h1 class="mt-4">Meu Perfil</h1>
+    <p class="text-muted">Gerencie suas informações e visualize seu impacto.</p>
+
+    <div class="row mt-4">
+        <!-- Personal Info Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-transparent border-0 pt-4 pb-0">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                            style="width: 60px; height: 60px; font-size: 24px;">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">{{ user.get_full_name|default:user.username }}</h5>
+                            <small class="text-muted">
+                                {% if user.is_superuser %}Administrador{% else %}Doador{% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <hr>
+                    <div class="mb-3">
+                        <label class="small text-muted fw-bold">E-MAIL</label>
+                        <p class="mb-0">{{ user.email }}</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="small text-muted fw-bold">CPF</label>
+                            <p class="mb-0">{{ user.cpf|default:"Não informado" }}</p>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="small text-muted fw-bold">TELEFONE</label>
+                            <p class="mb-0">{{ user.phone|default:"Não informado" }}</p>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-outline-primary btn-sm mt-2 disabled">
+                        <i class="bi bi-pencil"></i> Editar Perfil (Em breve)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 border-0 bg-primary text-white">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold"><i class="bi bi-trophy"></i> Meu Impacto</h5>
+                    <p class="opacity-75">Obrigado por fazer a diferença!</p>
+
+                    <div class="d-flex align-items-center mt-4">
+                        <div class="display-4 fw-bold me-3">{{ total_donations }}</div>
+                        <div class="lh-1">
+                            Cestas<br>Doadas
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-50">
+
+                    <h6 class="fw-bold"><i class="bi bi-clock-history"></i> Última Doação</h6>
+                    {% if last_donation %}
+                    <p class="mb-1">{{ last_donation.created_at|date:"d/m/Y H:i" }}</p>
+                    <span class="badge bg-light text-primary">{{ last_donation.get_status_display }}</span>
+                    {% else %}
+                    <p class="mb-0 opacity-75">Você ainda não fez doações.</p>
+                    <a href="{% url 'donate_options' %}" class="btn btn-light btn-sm mt-3 text-primary fw-bold">Fazer
+                        primeira doação</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-list-check text-primary"></i> Histórico Completo</h5>
+                    <a href="{% url 'my_donations' %}" class="btn btn-primary mt-2 mt-md-0">
+                        Ver todas as doações <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Back Button -->
+    <div class="text-center mt-4 mb-4">
+        <a href="{% url 'index' %}" class="btn btn-outline-secondary rounded-pill px-4"><i class="bi bi-arrow-left"></i>
+            Voltar para Início</a>
+    </div>
+</div>
+{% endblock %}
