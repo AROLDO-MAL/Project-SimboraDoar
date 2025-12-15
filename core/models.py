@@ -16,7 +16,13 @@ class Community(models.Model):
     description = models.TextField(verbose_name="Descrição")
     latitude = models.FloatField(verbose_name="Latitude")
     longitude = models.FloatField(verbose_name="Longitude")
-    photo = models.ImageField(upload_to='communities/', null=True, blank=True, verbose_name="Foto")
+    photo_filename = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True, 
+        verbose_name="Nome do Arquivo da Foto",
+        help_text="Digite o nome exato do arquivo localizado em 'static/img/communities/' (ex: 'Vila Pedra Mansa (Patu - RN).jpg')."
+    )
 
     def __str__(self):
         return self.name
