@@ -83,6 +83,42 @@
         background-color: #1b5e20;
         color: #e8f5e9;
     }
+
+    @media (max-width: 768px) {
+        .tracking-overlay {
+            position: relative;
+            /* Stack it normally on mobile */
+            top: 0;
+            left: 0;
+            width: 100%;
+            max-width: 100%;
+            padding: 15px;
+            background: var(--surface-color);
+            /* Fallback */
+            z-index: 10;
+        }
+
+        .glass-panel {
+            backdrop-filter: none;
+            box-shadow: none;
+            border-radius: 0;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tracking-container {
+            height: auto;
+            /* Allow scrolling */
+            flex-direction: column-reverse;
+            /* Map below details */
+        }
+
+        #trackingMap {
+            height: 50vh;
+            /* Fixed height for map on mobile */
+            min-height: 300px;
+        }
+    }
 </style>
 
 <div class="tracking-container">

@@ -137,3 +137,63 @@ body.high-contrast #sidebar-wrapper {
 body.high-contrast .global-navbar {
     border-bottom: 2px solid var(--text-primary) !important;
 }
+
+/* 7. Responsive & Mobile Optimizations */
+@media (max-width: 768px) {
+
+    /* Improve Typography readability on small screens */
+    h1,
+    .display-3,
+    .display-4,
+    .display-5 {
+        font-size: 1.8rem !important;
+        /* Cap huge titles */
+        word-wrap: break-word;
+        /* Prevent overflow */
+    }
+
+    h2,
+    .fs-3 {
+        font-size: 1.5rem !important;
+    }
+
+    p.lead {
+        font-size: 1rem !important;
+    }
+
+    /* Adjust container padding to gain space */
+    .container {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    /* Fix Carousel Height on mobile */
+    .carousel-inner,
+    .carousel-item,
+    .carousel-item>div {
+        height: 350px !important;
+        /* Reduced from 500px */
+    }
+
+    /* Normalize Card Stacking */
+    .card {
+        margin-bottom: 15px;
+    }
+
+    /* Sidebar Z-Index Fix */
+    #sidebar-wrapper {
+        z-index: 9999 !important;
+        /* Ensure it stays on top of everything */
+    }
+
+    #page-content-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Global Navbar Z-Index */
+    .global-navbar {
+        z-index: 9998 !important;
+        /* Just below sidebar */
+    }
+}
