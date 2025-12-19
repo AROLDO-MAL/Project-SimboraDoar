@@ -53,6 +53,10 @@ class Donation(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "Doação"
+        verbose_name_plural = "Doações"
+
     def __str__(self):
         return f"Doação {self.id} - {self.user.username}"
 
@@ -62,6 +66,10 @@ class Tracking(models.Model):
     longitude = models.FloatField()
     current_status = models.CharField(max_length=100, default="Aguardando início")
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Rastreio"
+        verbose_name_plural = "Rastreios"
 
     def __str__(self):
         return f"Rastreio {self.donation.id}"
