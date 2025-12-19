@@ -121,7 +121,12 @@
     }
 </style>
 
-<div class="tracking-container">
+<div class="tracking-container" id="trackingData" data-sede-lat="{{ sede_coords.lat|unlocalize }}"
+    data-sede-lng="{{ sede_coords.lng|unlocalize }}"
+    data-truck-lat="{% if tracking and tracking.latitude %}{{ tracking.latitude|stringformat:'.6f' }}{% else %}{{ sede_coords.lat|unlocalize }}{% endif %}"
+    data-truck-lng="{% if tracking and tracking.longitude %}{{ tracking.longitude|stringformat:'.6f' }}{% else %}{{ sede_coords.lng|unlocalize }}{% endif %}"
+    data-dest-lat="{% if donation.community %}{{ donation.community.latitude|unlocalize }}{% else %}-5.17178{% endif %}"
+    data-dest-lng="{% if donation.community %}{{ donation.community.longitude|unlocalize }}{% else %}-37.37646{% endif %}">
     <div id="trackingMap"></div>
 
     <!-- Floating Status Card -->
@@ -155,26 +160,17 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // --- 1. Coordinates ---
-        const sedeLat = parseFloat("{{ sede_coords.lat|unlocalize }}".replace(',', '.'));
-        const sedeLng = parseFloat("{{ sede_coords.lng|unlocalize }}".replace(',', '.'));
+        // --- 1. Coordinates via Data Attributes ---
+        const dataEl = document.getElementById('trackingData');
 
-        // Truck Start Position (From DB or Sede default)
-        {% if tracking and tracking.latitude %}
-        let currentTruckLat = parseFloat("{{ tracking.latitude|stringformat:'.6f' }}".replace(',', '.'));
-        let currentTruckLng = parseFloat("{{ tracking.longitude|stringformat:'.6f' }}".replace(',', '.'));
-        {% else %}
-        let currentTruckLat = sedeLat;
-        let currentTruckLng = sedeLng;
-        {% endif %}
+        const sedeLat = parseFloat(dataEl.dataset.sedeLat.replace(',', '.'));
+        const sedeLng = parseFloat(dataEl.dataset.sedeLng.replace(',', '.'));
 
-        {% if donation.community %}
-        const destLat = parseFloat("{{ donation.community.latitude|unlocalize }}".replace(',', '.'));
-        const destLng = parseFloat("{{ donation.community.longitude|unlocalize }}".replace(',', '.'));
-        {% else %}
-        const destLat = -5.17178;
-        const destLng = -37.37646;
-        {% endif %}
+        const currentTruckLat = parseFloat(dataEl.dataset.truckLat.replace(',', '.'));
+        const currentTruckLng = parseFloat(dataEl.dataset.truckLng.replace(',', '.'));
+
+        const destLat = parseFloat(dataEl.dataset.destLat.replace(',', '.'));
+        const destLng = parseFloat(dataEl.dataset.destLng.replace(',', '.'));
 
         // --- 2. Initialize Map ---
         const map = L.map('trackingMap', { zoomControl: false }).setView([currentTruckLat, currentTruckLng], 12);

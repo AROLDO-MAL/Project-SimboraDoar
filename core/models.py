@@ -45,13 +45,13 @@ class Donation(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='donations')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='donations', verbose_name="Usuário")
     community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, blank=True, related_name='donations', verbose_name="Comunidade Destino")
-    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, verbose_name="Tipo de Cesta")
     items = models.JSONField(default=list, verbose_name="Itens da Cesta")
-    total_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-    created_at = models.DateTimeField(auto_now_add=True)
+    total_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Valor Total")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING', verbose_name="Status")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
 
     class Meta:
         verbose_name = "Doação"
@@ -61,11 +61,11 @@ class Donation(models.Model):
         return f"Doação {self.id} - {self.user.username}"
 
 class Tracking(models.Model):
-    donation = models.OneToOneField(Donation, on_delete=models.CASCADE, related_name='tracking')
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    current_status = models.CharField(max_length=100, default="Aguardando início")
-    last_update = models.DateTimeField(auto_now=True)
+    donation = models.OneToOneField(Donation, on_delete=models.CASCADE, related_name='tracking', verbose_name="Doação")
+    latitude = models.FloatField(verbose_name="Latitude")
+    longitude = models.FloatField(verbose_name="Longitude")
+    current_status = models.CharField(max_length=100, default="Aguardando início", verbose_name="Status Atual")
+    last_update = models.DateTimeField(auto_now=True, verbose_name="Última Atualização")
 
     class Meta:
         verbose_name = "Rastreio"
